@@ -33,7 +33,7 @@ def clean_description(text):
 
     #re.sub(置き換える対象、置き換えるもの、置き換える全体のテキスト)
     #<[^>]>: HTMLタグにある表現一覧
-    clean=re.sub("<[^>]>", "", text)
+    clean=re.sub("<[^>]*>", "", text)
 
     
     #r'\s':は一つ以上の空欄を指定する
@@ -89,11 +89,13 @@ def fetch_new_articles(known_urls):
             #もうすでに調べた記事ならリストに追加する
             known_urls.add(url)
 
+            raw= clean_description(entry.get("summary", ""))
+
             new_articles.append({
                 "title":title,
                 "url":url,
                 "source":feed_info["name"],
-                "description":clean_description(entry.get("summary", ""))
+                "description":summarize_with_claude(title, raw),
             })
 
     return new_articles
@@ -149,9 +151,39 @@ def psuh_to_github():
     #check = True でコマンドが失敗したら、エラーを出す
     subprocess.run(["git", "add", "."], check=True)
 
-    subprocess.run(["git", "commit", ""])
+    subprocess.run(["git", "commit", "-m", f"記事を追加 {today}"], check=True)
 
     subprocess.run(["git", "push"], check=True)
+
+def summarize_with_claude(title, raw_text):
+    """
+    claude -pで要約。失敗したらraw_textをそのまま返す
+    """
+
+    #claudeへのpromptを渡す
+    prompt = (
+        "次の記事を、日本語で要点をまとめて、わかりやすくまとめてほしい"
+        "要点だけを返して、冗長にする内容はいらない \n\n"
+        f"タイトル: {title}\n\n 本文:{raw_text}"
+    )
+
+    try:
+        result = subprocess.run(
+            ["claude", "-p", prompt],
+            capture_output=True, text=True, timeout=60, encoding="utf-8",    
+        )
+
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+
+    except Exception as e:
+        print(f"要約失敗 {title[:30]} : {e}")
+    
+    return raw_text
+
+
+
+
 
 #このファイルを直接実行したときに動くブロック
 if __name__ == "__main__":
