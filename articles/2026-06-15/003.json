@@ -1,0 +1,6 @@
+{
+  "title": "High-severity vulnerability in Linux caused by a single faulty character",
+  "url": "https://arstechnica.com/security/2026/06/a-single-errant-character-in-the-linux-kernel-allows-attacker-to-gain-root/",
+  "source": "Ars technica",
+  "description": "Use-after-free bug can be exploited to evade sandbox defenses."
+}

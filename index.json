@@ -1,0 +1,82 @@
+[
+  {
+    "path": "articles/2026-06-15/001.json",
+    "url": "https://arstechnica.com/security/2026/06/peoplesoft-0-day-affecting-hundreds-of-organizations-steals-gigabytes-of-data/"
+  },
+  {
+    "path": "articles/2026-06-15/002.json",
+    "url": "https://arstechnica.com/security/2026/06/locked-in-heated-rivalry-with-researcher-microsoft-fixes-0-day-they-disclosed/"
+  },
+  {
+    "path": "articles/2026-06-15/003.json",
+    "url": "https://arstechnica.com/security/2026/06/a-single-errant-character-in-the-linux-kernel-allows-attacker-to-gain-root/"
+  },
+  {
+    "path": "articles/2026-06-15/004.json",
+    "url": "https://arstechnica.com/security/2026/06/for-the-2nd-time-in-weeks-microsoft-packages-laced-with-credential-stealer/"
+  },
+  {
+    "path": "articles/2026-06-15/005.json",
+    "url": "https://arstechnica.com/security/2026/06/highly-reviewed-speaker-can-be-hacked-over-the-air-to-infect-connected-devices/"
+  },
+  {
+    "path": "articles/2026-06-15/006.json",
+    "url": "https://arstechnica.com/security/2026/06/dashlane-explains-how-attackers-managed-to-download-encrypted-password-vaults/"
+  },
+  {
+    "path": "articles/2026-06-15/007.json",
+    "url": "https://arstechnica.com/security/2026/06/dashlane-issues-opaque-advisory-warning-20-encrypted-vaults-were-stolen/"
+  },
+  {
+    "path": "articles/2026-06-15/008.json",
+    "url": "https://arstechnica.com/security/2026/06/dozens-of-red-hat-packages-backdoored-through-its-offical-npm-channel/"
+  },
+  {
+    "path": "articles/2026-06-15/009.json",
+    "url": "https://arstechnica.com/security/2026/05/botnet-of-more-than-17-million-devices-dismantled/"
+  },
+  {
+    "path": "articles/2026-06-15/010.json",
+    "url": "https://arstechnica.com/security/2026/05/fed-up-with-vibe-coders-dev-sneaks-data-nuking-prompt-injection-into-their-code/"
+  },
+  {
+    "path": "articles/2026-06-15/011.json",
+    "url": "https://arstechnica.com/security/2026/05/websites-have-a-new-way-to-spy-on-visitors-analyzing-their-ssd-activity/"
+  },
+  {
+    "path": "articles/2026-06-15/012.json",
+    "url": "https://arstechnica.com/information-technology/2026/05/millions-of-ai-agents-imperiled-by-critical-vulnerability-in-open-source-package/"
+  },
+  {
+    "path": "articles/2026-06-15/013.json",
+    "url": "https://arstechnica.com/tech-policy/2026/05/uss-big-bet-on-quantum-computing-may-not-be-entirely-legal/"
+  },
+  {
+    "path": "articles/2026-06-15/014.json",
+    "url": "https://arstechnica.com/security/2026/05/texas-ag-sues-meta-over-claims-that-whatsapp-doesnt-provide-end-to-end-encryption/"
+  },
+  {
+    "path": "articles/2026-06-15/015.json",
+    "url": "https://arstechnica.com/information-technology/2026/05/a-hacker-group-is-poisoning-open-source-code-at-an-unprecedented-scale/"
+  },
+  {
+    "path": "articles/2026-06-15/016.json",
+    "url": "https://arstechnica.com/gadgets/2026/05/us-government-takes-2-billion-equity-stake-in-nine-quantum-computing-firms/"
+  },
+  {
+    "path": "articles/2026-06-15/017.json",
+    "url": "https://arstechnica.com/security/2026/05/google-publishes-exploit-code-threatening-millions-of-chromium-users/"
+  },
+  {
+    "path": "articles/2026-06-15/018.json",
+    "url": "https://arstechnica.com/information-technology/2026/05/in-stunning-display-of-stupid-secret-cisa-credentials-found-in-public-github-repo/"
+  },
+  {
+    "path": "articles/2026-06-15/019.json",
+    "url": "https://arstechnica.com/security/2026/05/zero-day-exploit-completely-defeats-default-windows-11-bitlocker-protections/"
+  },
+  {
+    "path": "articles/2026-06-15/020.json",
+    "url": "https://arstechnica.com/information-technology/2026/05/cisco-announces-record-revenue-and-4000-layoffs-in-the-same-day/"
+  }
+]
