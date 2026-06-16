@@ -1,7 +1,9 @@
 import json
 import os
 import re
+import shutil
 import subprocess
+import tempfile
 from datetime import date
 
 import feedparser
@@ -220,8 +222,8 @@ def _parse_claude_json(text):
     if it can't oarse return None
     """
 
-    #get rid of unwated json wraps
-    text = text.replace("'''json", "").replace("''",(""))
+    #```json ... ``` のコードフェンスを消す(claudeが付けてくることがある)
+    text = text.replace("```json", "").replace("```", "")
 
     #最初と最後のwrapperの範囲飲み切り出す
     start = text.find("{")
@@ -243,18 +245,32 @@ def analyze_with_claude(title, raw_text):
     #タグを文字列にしてpromptが読み込めるようにする
     tag_menu = ", ".join(ALLOWED_TAGS)
 
-    #claudeへのpromptを渡す
+    #claudeへのprompt。JSONだけ返すように強めにお願いするのがコツ
     prompt = (
-        "次のニュース記事を分析して、JSONのみ返してください。説明文はいらないです。\n"
-        "形式: \n"
-        "{'Summary': '日本で誰にでも端的に、わかりやすく要約'、'tags':['タグ1','タグ2']}\n\n"
-        f"tags は以下の一覧から1~2個選ぶこと: {tag_menu}\n\n"
-        f"タイトル: {title}\n\n本文 :{raw_text}"
+        "次のニュース記事を要約して、JSONだけを返してください。前置きや説明文は書かないこと。\n"
+        "次の形式の、ダブルクォートの正しいJSONで返すこと:\n"
+        '{"summary": "日本語で誰にでも分かるように2〜3文で要約", "tags": ["タグ1", "タグ2"]}\n\n'
+        f"tags は必ず次の一覧から1〜2個だけ選ぶこと: {tag_menu}\n\n"
+        f"タイトル: {title}\n\n本文: {raw_text}"
     )
+
+    #Windowsだと claude は claude.CMD なので、"claude" だけでは見つからない([WinError 2])。
+    #shutil.which でフルパスにする。見つからなければそのまま "claude" を使う。
+    claude_cmd = shutil.which("claude") or "claude"
+
+    #claude -p はそのフォルダのファイルを読みにいく(エージェント的に動く)ので、
+    #リポジトリの中で動かすと、記事ではなくコードを読んで脱線してしまう。
+    #何もない一時フォルダで動かして、純粋に「渡した文章だけ」を要約させる。
+    neutral_dir = tempfile.gettempdir()
 
     try:
         result = subprocess.run(
-            ["claude", "-p", prompt],
+            [claude_cmd, "-p"],
+            #プロンプトは引数ではなく stdin(input=) から渡す。
+            #長い日本語の文章を引数で渡すと、claude.CMD が途中で切ってしまい、
+            #claudeが「記事を貼ってください」と返してきて要約できないため。
+            input=prompt,
+            cwd=neutral_dir,               #リポジトリではなく一時フォルダで実行する
             capture_output=True, text=True, timeout=60, encoding="utf-8",    
         )
 
@@ -277,13 +293,17 @@ def analyze_with_claude(title, raw_text):
                         tags.append(t)
 
                 #タグが一つも当てはまらないなら"その他"にする
+                if not tags:
+                    tags = ["その他"]
+
                 return {"summary": summary, "tags":tags}
 
     except Exception as e:
-        print(f"要約失敗 {title[:30]} : {e}")
-    
-    #ここで用悪失敗用のテキストとタグを返す
-    return {"summary": summary, "tags":["その他"]}
+        print(f"要約失敗 {title[:30]} : {e}", flush=True)
+
+    #ここまで来たら失敗(claudeが呼べない/JSONが読めない等)。
+    #summaryは作られていないこともあるので、固定の文字列でフォールバックを返す。
+    return {"summary": "Claudeの要約ができませんでした", "tags":["その他"]}
 
 
 #このファイルを直接実行したときに動くブロック
