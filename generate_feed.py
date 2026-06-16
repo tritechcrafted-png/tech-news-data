@@ -118,13 +118,17 @@ def fetch_new_articles(known_urls):
                                                                                                                                                             
 def collect_new_entries(known_urls):
     """
-    RSSから「まだ持っていない」エントリだけを集める。ここでは要約しない（速い）。
-    先に総数を知るための関数。返すのは {title,url,source,raw} の辞書のリスト。
-    進捗バーが「全何件中の何件目」を出すために使う。
+    RSSから、まだ持っていない記事だけを集める関数
+    ここでは要約はしない(その分だけ速い)
+
+    先に「全部で何件あるか」を知りたいから、要約とは分けて集めている
+    進捗バーの「全○件中の○件目」を出すために使う
+    返すのは {title,url,source,raw} の辞書のリスト
     """
 
     new_entries = []
 
+    #登録されているサイトから一つずつ記事を集めていく
     for feed_info in RSS_FEEDS:
         print(f"取得中: {feed_info['name']} ...", flush=True)
 
@@ -134,15 +138,16 @@ def collect_new_entries(known_urls):
             url = entry.get("link", "").strip()
             title = entry.get("title", "").strip()
 
-            # URL・タイトルが無い、または取得済みなら飛ばす
+            #URL・タイトルが無い、もう取得済みの記事なら飛ばす
             if not url or not title or url in known_urls:
                 continue
 
+            #調べた記事として覚えておく(同じものを2回入れないため)
             known_urls.add(url)
 
             raw = clean_description(entry.get("summary", ""))
 
-            # 要約はまだしない。素材だけ溜める。
+            #まだ要約はしない。材料だけリストに溜めておく
             new_entries.append({
                 "title": title,
                 "url": url,
@@ -291,12 +296,12 @@ if __name__ == "__main__":
     for entry in index:
         known_urls.add(entry["url"])
 
-    # --- フェーズ1: 集めるだけ（速い）。これで総数が分かる。 ---
+    # --- フェーズ1: 集めるだけ(速い)。これで全部で何件か分かる ---
     print("RSS feedから記事を取得します", flush=True)
     entries = collect_new_entries(known_urls)
     total = len(entries)
 
-    # 最初の合図。Djangoはこの "PROGRESS 0 <total>" で総数を受け取る。
+    #最初の合図。"PROGRESS 0 <総数>" を出して、Django側に総数を伝える
     print(f"PROGRESS 0 {total}", flush=True)
 
     if total == 0:
@@ -305,8 +310,8 @@ if __name__ == "__main__":
     else:
         new_articles = []
 
-        # --- フェーズ2: 1件ずつ要約＋タグ付け（遅い）。1件終わるごとに進捗を出す。 ---
-        # enumerate(..., start=1) で i が 1,2,3... と数える
+        # --- フェーズ2: 1件ずつ要約＋タグ付け(遅い)。1件終わるごとに進捗を出す ---
+        #enumerate(..., start=1) で i が 1,2,3... と数えてくれる
         for i, e in enumerate(entries, start=1):
             analysis = analyze_with_claude(e["title"], e["raw"])
 
@@ -318,7 +323,7 @@ if __name__ == "__main__":
                 "tags": analysis["tags"],
             })
 
-            # ★ 心臓部：今 i 件 / 全 total 件 終わった、とDjangoに知らせる
+            #ここが大事:今 i 件目 / 全 total 件 終わった、とDjangoに知らせる
             print(f"PROGRESS {i} {total}", flush=True)
 
         #取得した記事を保存する
