@@ -15,6 +15,18 @@ RSS_FEEDS=[
     {"name": "MIT Tech Review", "url":"https://www.technologyreview.com/feed/"},
 ]
 
+#記事の分類のために使っていいタグ一覧
+ALLOWED_TAGS = [
+    "AI",
+    "セキュリティ",
+    "ガジェット",
+    "ビジネス",
+    "開発",
+    "科学",
+    "その他",
+]
+
+
 INDEX_FILE="index.json"
 
 #書くサイトごとに最大いくつの記事を取得するのか
@@ -91,11 +103,15 @@ def fetch_new_articles(known_urls):
 
             raw= clean_description(entry.get("summary", ""))
 
+            #Claudeで要約とタグを一緒に取得
+            analysis = analyze_with_claude(title, raw)
+
             new_articles.append({
                 "title":title,
                 "url":url,
                 "source":feed_info["name"],
-                "description":summarize_with_claude(title, raw),
+                "description":analysis["summary"],
+                "tags":analysis["tags"]
             })
 
     return new_articles
@@ -155,16 +171,43 @@ def psuh_to_github():
 
     subprocess.run(["git", "push"], check=True)
 
-def summarize_with_claude(title, raw_text):
+
+def _parse_claude_json(text):
     """
-    claude -pで要約。失敗したらraw_textをそのまま返す
+    Claudeの出力から最初の {...}などが存在している場合は除去して、辞書形式にする
+    if it can't oarse return None
     """
+
+    #get rid of unwated json wraps
+    text = text.replace("'''json", "").replace("''",(""))
+
+    #最初と最後のwrapperの範囲飲み切り出す
+    start = text.find("{")
+    end = text.rfind("}")
+
+    if start == -1 or end == -1:
+        return None
+    
+    try:
+        return json.loads(text[start:end +1])
+    except json.JSONDecodeError:
+        return None
+
+def analyze_with_claude(title, raw_text):
+    """
+    claude に要約とタグ付けを一つのjsonとしてまとめる
+    """
+
+    #タグを文字列にしてpromptが読み込めるようにする
+    tag_menu = ", ".join(ALLOWED_TAGS)
 
     #claudeへのpromptを渡す
     prompt = (
-        "次の記事を、日本語で要点をまとめて、わかりやすくまとめてほしい"
-        "要点だけを返して、冗長にする内容はいらない \n\n"
-        f"タイトル: {title}\n\n 本文:{raw_text}"
+        "次のニュース記事を分析して、JSONのみ返してください。説明文はいらないです。\n"
+        "形式: \n"
+        "{'Summary': '日本で誰にでも端的に、わかりやすく要約'、'tags':['タグ1','タグ2']}\n\n"
+        f"tags は以下の一覧から1~2個選ぶこと: {tag_menu}\n\n"
+        f"タイトル: {title}\n\n本文 :{raw_text}"
     )
 
     try:
@@ -174,15 +217,31 @@ def summarize_with_claude(title, raw_text):
         )
 
         if result.returncode == 0 and result.stdout.strip():
-            return result.stdout.strip()
+            data = _parse_claude_json(result.stdout)
+
+            if data:
+                #要約を取り出す
+                summary= data.get("summary","").strip()
+
+                #もし要約ができない場合は表示する
+                if not summary:
+                    summary= "Claudeの要約ができませんでした"
+
+                #事前に用意したタグ以外ははじく
+                tags=[]
+                for t in data.get("tags", []):
+                    if t in ALLOWED_TAGS:
+                        #足しても問題ないタグを保管
+                        tags.append(t)
+
+                #タグが一つも当てはまらないなら"その他"にする
+                return {"summary": summary, "tags":tags}
 
     except Exception as e:
         print(f"要約失敗 {title[:30]} : {e}")
     
-    return raw_text
-
-
-
+    #ここで用悪失敗用のテキストとタグを返す
+    return {"summary": summary, "tags":["その他"]}
 
 
 #このファイルを直接実行したときに動くブロック
