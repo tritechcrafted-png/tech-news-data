@@ -78,5 +78,9 @@
   {
     "path": "articles/2026-06-15/020.json",
     "url": "https://arstechnica.com/information-technology/2026/05/cisco-announces-record-revenue-and-4000-layoffs-in-the-same-day/"
+  },
+  {
+    "path": "articles/2026-06-16/001.json",
+    "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/"
   }
 ]
