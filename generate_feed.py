@@ -116,6 +116,43 @@ def fetch_new_articles(known_urls):
 
     return new_articles
                                                                                                                                                             
+def collect_new_entries(known_urls):
+    """
+    RSSから「まだ持っていない」エントリだけを集める。ここでは要約しない（速い）。
+    先に総数を知るための関数。返すのは {title,url,source,raw} の辞書のリスト。
+    進捗バーが「全何件中の何件目」を出すために使う。
+    """
+
+    new_entries = []
+
+    for feed_info in RSS_FEEDS:
+        print(f"取得中: {feed_info['name']} ...", flush=True)
+
+        feed = feedparser.parse(feed_info["url"])
+
+        for entry in feed.entries[:LIMIT_PER_FEED]:
+            url = entry.get("link", "").strip()
+            title = entry.get("title", "").strip()
+
+            # URL・タイトルが無い、または取得済みなら飛ばす
+            if not url or not title or url in known_urls:
+                continue
+
+            known_urls.add(url)
+
+            raw = clean_description(entry.get("summary", ""))
+
+            # 要約はまだしない。素材だけ溜める。
+            new_entries.append({
+                "title": title,
+                "url": url,
+                "source": feed_info["name"],
+                "raw": raw,
+            })
+
+    return new_entries
+
+
 def save_articles(new_articles, index):
     """
     新しい記事をひとつづつ　jsonファイルとして保存
@@ -246,34 +283,50 @@ def analyze_with_claude(title, raw_text):
 
 #このファイルを直接実行したときに動くブロック
 if __name__ == "__main__":
-    
-    #
-    index=load_index()
+
+    index = load_index()
 
     #取得済みの全URLを set(重複なし)のURLのリストを追加していく
     known_urls = set()
-
-    #
     for entry in index:
         known_urls.add(entry["url"])
 
-    #新しい記事を習得する
-    print("RSS feedから記事を習得する")
-    new_articles=fetch_new_articles(known_urls)
+    # --- フェーズ1: 集めるだけ（速い）。これで総数が分かる。 ---
+    print("RSS feedから記事を取得します", flush=True)
+    entries = collect_new_entries(known_urls)
+    total = len(entries)
 
-    #もし、新しい記事がない場合
-    if not new_articles:
-        print("新しい記事はありませんでした")
+    # 最初の合図。Djangoはこの "PROGRESS 0 <total>" で総数を受け取る。
+    print(f"PROGRESS 0 {total}", flush=True)
 
-    #新しい記事がある場合は
+    if total == 0:
+        print("新しい記事はありませんでした", flush=True)
+
     else:
-        #取得した記事を保存する
-        saved=save_articles(new_articles, index)
-        save_json(INDEX_FILE, index)
+        new_articles = []
 
-        print(f"{saved}件の記事を保存しました")
+        # --- フェーズ2: 1件ずつ要約＋タグ付け（遅い）。1件終わるごとに進捗を出す。 ---
+        # enumerate(..., start=1) で i が 1,2,3... と数える
+        for i, e in enumerate(entries, start=1):
+            analysis = analyze_with_claude(e["title"], e["raw"])
+
+            new_articles.append({
+                "title": e["title"],
+                "url": e["url"],
+                "source": e["source"],
+                "description": analysis["summary"],
+                "tags": analysis["tags"],
+            })
+
+            # ★ 心臓部：今 i 件 / 全 total 件 終わった、とDjangoに知らせる
+            print(f"PROGRESS {i} {total}", flush=True)
+
+        #取得した記事を保存する
+        saved = save_articles(new_articles, index)
+        save_json(INDEX_FILE, index)
+        print(f"{saved}件の記事を保存しました", flush=True)
 
         #GitHubに習得した記事をGithubにpushする
-        print("GitHubにpush中")
+        print("GitHubにpush中", flush=True)
         psuh_to_github()
-        print("完了! Githubのリポジトリを確認してください")
+        print("完了! Githubのリポジトリを確認してください", flush=True)
