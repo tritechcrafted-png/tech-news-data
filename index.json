@@ -82,5 +82,13 @@
   {
     "path": "articles/2026-06-16/001.json",
     "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/"
+  },
+  {
+    "path": "articles/2026-06-17/001.json",
+    "url": "https://arstechnica.com/information-technology/2026/06/hpe-tempts-vmware-users-partners-with-year-of-free-virtualization-software/"
+  },
+  {
+    "path": "articles/2026-06-17/002.json",
+    "url": "https://arstechnica.com/security/2026/06/critical-copilot-vulnerability-allowed-hackers-to-seal-2fa-code-from-users/"
   }
 ]

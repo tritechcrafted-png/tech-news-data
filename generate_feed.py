@@ -127,7 +127,6 @@ def collect_new_entries(known_urls):
     進捗バーの「全○件中の○件目」を出すために使う
     返すのは {title,url,source,raw} の辞書のリスト
     """
-
     new_entries = []
 
     #登録されているサイトから一つずつ記事を集めていく
