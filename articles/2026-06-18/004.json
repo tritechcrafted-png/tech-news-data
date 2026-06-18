@@ -1,0 +1,9 @@
+{
+  "title": "Windows and Linux users: The deadline to update Secure Boot keys is near",
+  "url": "https://arstechnica.com/security/2026/06/windows-and-linux-users-the-deadline-to-update-secure-boot-keys-is-near/",
+  "source": "Ars technica",
+  "description": "Windows・Linuxユーザー向けに、マシンの起動シーケンスを保護しているSecure Bootキーの有効期限が近づいているという注意喚起です。期限切れ前にキーの更新作業を行う必要があります。",
+  "tags": [
+    "セキュリティ"
+  ]
+}

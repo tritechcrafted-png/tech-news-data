@@ -1,0 +1,10 @@
+{
+  "title": "Users cry foul after AMD stripped memory crypto from its consumer CPUs",
+  "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/",
+  "source": "Ars technica",
+  "description": "AMDがコンシューマー向けCPUからTSME（透過的セキュアメモリ暗号化）機能を密かに削除したことが判明し、ユーザーから強い批判を受けている。この変更は意図的かつ非公開で行われたとみられており、消費者のセキュリティに影響を与える可能性がある。",
+  "tags": [
+    "セキュリティ",
+    "ガジェット"
+  ]
+}

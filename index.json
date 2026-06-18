@@ -78,5 +78,33 @@
   {
     "path": "articles/2026-06-15/020.json",
     "url": "https://arstechnica.com/information-technology/2026/05/cisco-announces-record-revenue-and-4000-layoffs-in-the-same-day/"
+  },
+  {
+    "path": "articles/2026-06-16/001.json",
+    "url": "https://arstechnica.com/security/2026/06/users-cry-foul-after-amd-stripped-memory-crypto-from-its-consumer-cpus/"
+  },
+  {
+    "path": "articles/2026-06-17/001.json",
+    "url": "https://arstechnica.com/information-technology/2026/06/hpe-tempts-vmware-users-partners-with-year-of-free-virtualization-software/"
+  },
+  {
+    "path": "articles/2026-06-17/002.json",
+    "url": "https://arstechnica.com/security/2026/06/critical-copilot-vulnerability-allowed-hackers-to-seal-2fa-code-from-users/"
+  },
+  {
+    "path": "articles/2026-06-18/001.json",
+    "url": "https://arstechnica.com/security/2026/06/massive-breach-spills-credentials-for-thousands-of-sensitive-networks/"
+  },
+  {
+    "path": "articles/2026-06-18/002.json",
+    "url": "https://arstechnica.com/information-technology/2026/06/tesco-moving-40000-server-workloads-off-vmware-amid-broadcoms-abusive-conduct/"
+  },
+  {
+    "path": "articles/2026-06-18/003.json",
+    "url": "https://arstechnica.com/ai/2026/06/dangerous-ai-models-are-coming-no-matter-what/"
+  },
+  {
+    "path": "articles/2026-06-18/004.json",
+    "url": "https://arstechnica.com/security/2026/06/windows-and-linux-users-the-deadline-to-update-secure-boot-keys-is-near/"
   }
 ]

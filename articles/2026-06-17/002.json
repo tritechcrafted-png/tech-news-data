@@ -1,0 +1,10 @@
+{
+  "title": "Critical Copilot vulnerability allowed hackers to steal 2FA code from users",
+  "url": "https://arstechnica.com/security/2026/06/critical-copilot-vulnerability-allowed-hackers-to-seal-2fa-code-from-users/",
+  "source": "Ars technica",
+  "description": "Microsoft Copilotに「SearchLeak」と呼ばれる重大な脆弱性が見つかり、ハッカーがユーザーの2段階認証(2FA)コードを盗み取ることが可能だった。この事例は、LLM(大規模言語モデル)に対する業界のセキュリティ対策が繰り返し失敗していることを示している。",
+  "tags": [
+    "セキュリティ",
+    "AI"
+  ]
+}
