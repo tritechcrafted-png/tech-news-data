@@ -110,5 +110,9 @@
   {
     "path": "articles/2026-06-18/005.json",
     "url": "https://www.midjourney.com/medical/blogpost"
+  },
+  {
+    "path": "articles/2026-06-18/006.json",
+    "url": "https://lore.org/"
   }
 ]
