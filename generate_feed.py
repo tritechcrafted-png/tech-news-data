@@ -150,6 +150,12 @@ def collect_new_entries(known_urls):
 
             raw = clean_description(entry.get("summary", ""))
 
+            #本文がほとんど空の記事(Hacker Newsの「Comments」だけのリンク投稿など)は、
+            #Claudeに渡しても中身を要約できない。ここで捨てて、JSONにも保存しない。
+            if len(raw) < 30:
+                print(f"スキップ(本文が空/短い): {title[:40]}", flush=True)
+                continue
+
             #まだ要約はしない。材料だけリストに溜めておく
             new_entries.append({
                 "title": title,
@@ -250,10 +256,14 @@ def analyze_with_claude(title, raw_text):
     #summary = 見出しの下に出す短いリード文。detail = その下に出すやさしい本文。
     #2つに分けることで、画面では「短い説明 → くわしい説明」の順で出せる。
     prompt = (
-        "次のニュース記事を要約して、JSONだけを返してください。前置きや説明文は書かないこと。\n"
+        "次のニュース記事を、ITにくわしくない人でもスラスラ読めるように要約して、JSONだけを返してください。前置きや説明文は書かないこと。\n"
         "次の形式の、ダブルクォートの正しいJSONで返すこと:\n"
-        '{"summary": "記事の内容を一言で伝える見出し。1文だけ、20〜40文字くらいの短いリード文にする", '
-        '"detail": "専門用語を避け、誰にでも分かるやさしい日本語で、記事の要点(何が起きたか・なぜ重要か・どう影響するか)を1〜2段落でまとめ、記事を読まなくても全体像がつかめるようにする", '
+        '{"summary": "記事を一言で表す見出し。1文だけ、20〜40文字くらいの短いリード文にする", '
+        '"detail": "ITやニュースにくわしくない人・初心者でもパッと分かるように、やさしい言葉で書く。'
+        '専門用語はできるだけ使わず、出てきたら一言そえて説明する。'
+        '教科書みたいな硬い文章ではなく、友達に「こんなことがあったんだよ」と話すような、'
+        'やわらかくて親しみやすい、思わず読みたくなるトーンにする。'
+        '何が起きたか・なぜおもしろい(気になる)話なのか・自分たちにどう関係しそうかを、1〜2段落でまとめる", '
         '"tags": ["タグ1", "タグ2"]}\n\n'
         f"tags は必ず次の一覧から1〜2個だけ選ぶこと: {tag_menu}\n\n"
         f"タイトル: {title}\n\n本文: {raw_text}"
@@ -286,9 +296,10 @@ def analyze_with_claude(title, raw_text):
                 #見出し用の短い要約(リード文)を取り出す
                 summary= data.get("summary","").strip()
 
-                #もし要約ができない場合は表示する
+                #要約が空 = 中身を読み取れなかった、ということ。
+                #ニセモノの記事を保存しないように、None を返してスキップさせる。
                 if not summary:
-                    summary= "Claudeの要約ができませんでした"
+                    return None
 
                 #本文用の、やさしい言葉でのくわしい説明を取り出す
                 detail = data.get("detail", "").strip()
@@ -314,8 +325,8 @@ def analyze_with_claude(title, raw_text):
         print(f"要約失敗 {title[:30]} : {e}", flush=True)
 
     #ここまで来たら失敗(claudeが呼べない/JSONが読めない等)。
-    #summary/detailは作られていないこともあるので、固定の文字列でフォールバックを返す。
-    return {"summary": "Claudeの要約ができませんでした", "detail": "", "tags":["その他"]}
+    #ニセモノの記事を保存しないよう、None を返して呼び出し側にスキップさせる。
+    return None
 
 
 #このファイルを直接実行したときに動くブロック
@@ -364,6 +375,13 @@ if __name__ == "__main__":
         for i, e in enumerate(entries, start=1):
             analysis = analyze_with_claude(e["title"], e["raw"])
 
+            #要約が取れなかった記事(None)はスキップする。保存もpushもしない。
+            #「本文が空」「Claudeが呼べない」など、理由は何であれここで捨てる。
+            if analysis is None:
+                print(f"スキップ(要約できず): {e['title'][:40]}", flush=True)
+                print(f"PROGRESS {i} {total}", flush=True)
+                continue
+
             new_articles.append({
                 "title": e["title"],
                 "url": e["url"],
@@ -378,12 +396,18 @@ if __name__ == "__main__":
             #ここが大事:今 i 件目 / 全 total 件 終わった、とDjangoに知らせる
             print(f"PROGRESS {i} {total}", flush=True)
 
-        #取得した記事を保存する
-        saved = save_articles(new_articles, index)
-        save_json(INDEX_FILE, index)
-        print(f"{saved}件の記事を保存しました", flush=True)
+        #1件も残らなかったら、保存もpushもしないで終わる。
+        #(空のまま git commit すると「nothing to commit」で落ちるのも防げる)
+        if not new_articles:
+            print("保存できる記事がありませんでした", flush=True)
 
-        #GitHubに習得した記事をGithubにpushする
-        print("GitHubにpush中", flush=True)
-        psuh_to_github()
-        print("完了! Githubのリポジトリを確認してください", flush=True)
+        else:
+            #取得した記事を保存する
+            saved = save_articles(new_articles, index)
+            save_json(INDEX_FILE, index)
+            print(f"{saved}件の記事を保存しました", flush=True)
+
+            #GitHubに習得した記事をGithubにpushする
+            print("GitHubにpush中", flush=True)
+            psuh_to_github()
+            print("完了! Githubのリポジトリを確認してください", flush=True)
