@@ -3,6 +3,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 from datetime import date
 
@@ -246,10 +247,14 @@ def analyze_with_claude(title, raw_text):
     tag_menu = ", ".join(ALLOWED_TAGS)
 
     #claudeへのprompt。JSONだけ返すように強めにお願いするのがコツ
+    #summary = 見出しの下に出す短いリード文。detail = その下に出すやさしい本文。
+    #2つに分けることで、画面では「短い説明 → くわしい説明」の順で出せる。
     prompt = (
         "次のニュース記事を要約して、JSONだけを返してください。前置きや説明文は書かないこと。\n"
         "次の形式の、ダブルクォートの正しいJSONで返すこと:\n"
-        '{"summary": "日本語で誰にでも分かるように2〜3文で要約", "tags": ["タグ1", "タグ2"]}\n\n'
+        '{"summary": "記事の内容を一言で伝える見出し。1文だけ、20〜40文字くらいの短いリード文にする", '
+        '"detail": "専門用語を避け、誰にでも分かるやさしい日本語で、記事の要点(何が起きたか・なぜ重要か・どう影響するか)を1〜2段落でまとめ、記事を読まなくても全体像がつかめるようにする", '
+        '"tags": ["タグ1", "タグ2"]}\n\n'
         f"tags は必ず次の一覧から1〜2個だけ選ぶこと: {tag_menu}\n\n"
         f"タイトル: {title}\n\n本文: {raw_text}"
     )
@@ -278,12 +283,19 @@ def analyze_with_claude(title, raw_text):
             data = _parse_claude_json(result.stdout)
 
             if data:
-                #要約を取り出す
+                #見出し用の短い要約(リード文)を取り出す
                 summary= data.get("summary","").strip()
 
                 #もし要約ができない場合は表示する
                 if not summary:
                     summary= "Claudeの要約ができませんでした"
+
+                #本文用の、やさしい言葉でのくわしい説明を取り出す
+                detail = data.get("detail", "").strip()
+
+                #くわしい説明が空のときは、とりあえず短い要約で埋めておく
+                if not detail:
+                    detail = summary
 
                 #事前に用意したタグ以外ははじく
                 tags=[]
@@ -296,18 +308,28 @@ def analyze_with_claude(title, raw_text):
                 if not tags:
                     tags = ["その他"]
 
-                return {"summary": summary, "tags":tags}
+                return {"summary": summary, "detail": detail, "tags":tags}
 
     except Exception as e:
         print(f"要約失敗 {title[:30]} : {e}", flush=True)
 
     #ここまで来たら失敗(claudeが呼べない/JSONが読めない等)。
-    #summaryは作られていないこともあるので、固定の文字列でフォールバックを返す。
-    return {"summary": "Claudeの要約ができませんでした", "tags":["その他"]}
+    #summary/detailは作られていないこともあるので、固定の文字列でフォールバックを返す。
+    return {"summary": "Claudeの要約ができませんでした", "detail": "", "tags":["その他"]}
 
 
 #このファイルを直接実行したときに動くブロック
 if __name__ == "__main__":
+
+    #コマンドラインで「最大何件まで要約するか」を受け取る。
+    #例: python generate_feed.py 1  → 1件だけ
+    #数字が無い／数字でないときは None（＝制限なし＝全部）にする。
+    max_articles = None
+    if len(sys.argv) >= 2:
+        try:
+            max_articles = int(sys.argv[1])
+        except ValueError:
+            max_articles = None
 
     index = load_index()
 
@@ -319,6 +341,13 @@ if __name__ == "__main__":
     # --- フェーズ1: 集めるだけ(速い)。これで全部で何件か分かる ---
     print("RSS feedから記事を取得します", flush=True)
     entries = collect_new_entries(known_urls)
+
+    #★デモ用: 指定された件数だけに絞る。
+    #要約(Claude呼び出し)は1件ずつ走って重いので、ここで先に短くしておく。
+    #max_articles が None のときは絞らない＝全部。
+    if max_articles is not None:
+        entries = entries[:max_articles]
+
     total = len(entries)
 
     #最初の合図。"PROGRESS 0 <総数>" を出して、Django側に総数を伝える
@@ -339,7 +368,10 @@ if __name__ == "__main__":
                 "title": e["title"],
                 "url": e["url"],
                 "source": e["source"],
+                #description = 見出しの下に出す短いリード文
                 "description": analysis["summary"],
+                #detail = そのさらに下に出す、やさしい言葉でのくわしい説明
+                "detail": analysis["detail"],
                 "tags": analysis["tags"],
             })
 
