@@ -9,6 +9,20 @@ from datetime import date
 
 import feedparser
 
+#--- Windows / Azure VM 向けのSSL対策 ---
+#WindowsのPythonはOSの証明書ストアを読まないので、HTTPSでRSSを取りに行くと
+#「CERTIFICATE_VERIFY_FAILED(証明書を確認できない)」で失敗することがある。
+#その場合 feedparser は例外を出さずに「記事0件」を返すだけなので、結果として
+#「新しい記事はありませんでした」になり、何も起きないように見える。
+#certifi(信頼できる証明書の束)を使う検証器を、HTTPS通信全体の既定に設定しておく。
+#(sync_github.py で使ったのと同じ対策を、RSS取得にも効かせる)
+import ssl
+import certifi
+
+ssl._create_default_https_context = lambda: ssl.create_default_context(
+    cafile=certifi.where()
+)
+
 #取得する記事のソースを辞書形式で保管
 RSS_FEEDS=[
     {"name":"Hacker News", "url": "https://news.ycombinator.com/rss"},
@@ -136,6 +150,12 @@ def collect_new_entries(known_urls):
         print(f"取得中: {feed_info['name']} ...", flush=True)
 
         feed = feedparser.parse(feed_info["url"])
+
+        #取得に失敗していたら(SSLエラー・ネットワーク遮断など)、その旨を表示する。
+        #feedparserは失敗しても例外を出さず、bozo=1 と空のentriesを返すだけなので、
+        #黙って0件にならないよう、ここで気づけるようにしておく。
+        if feed.bozo and not feed.entries:
+            print(f"  ⚠ 取得失敗: {feed_info['name']} -> {feed.get('bozo_exception')}", flush=True)
 
         for entry in feed.entries[:LIMIT_PER_FEED]:
             url = entry.get("link", "").strip()
