@@ -1,3 +1,4 @@
+import sys
 import json
 import os
 import re
@@ -308,7 +309,19 @@ def analyze_with_claude(title, raw_text):
 #このファイルを直接実行したときに動くブロック
 if __name__ == "__main__":
 
-    index = load_index()
+    #コマンドで最大差圏まで要約するのかを受け取る
+    #例：python generate_feed.py 1 -> 1件だけ
+    #数字がない場合は Noneで(制限なし)にする
+    max_articles=None
+
+    #
+    if len(sys.argv) >= 2:
+        try:
+            max_articles =int(sys.argv[1])
+        except ValueError:
+            max_articles=None
+
+    index= load_index()
 
     #取得済みの全URLを set(重複なし)のURLのリストを追加していく
     known_urls = set()
@@ -317,7 +330,14 @@ if __name__ == "__main__":
 
     # --- フェーズ1: 集めるだけ(速い)。これで全部で何件か分かる ---
     print("RSS feedから記事を取得します", flush=True)
+
+
     entries = collect_new_entries(known_urls)
+    
+    if max_articles is not None:
+        #ここで最大の件数を把握する
+        entries=entries[:max_articles]
+
     total = len(entries)
 
     #最初の合図。"PROGRESS 0 <総数>" を出して、Django側に総数を伝える
