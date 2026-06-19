@@ -1,0 +1,11 @@
+{
+  "title": "Amazon hopes to challenge Nvidia more directly by selling its AI chips",
+  "url": "https://techcrunch.com/2026/06/18/amazon-hopes-to-challenge-nvidia-more-directly-by-selling-its-ai-chips/",
+  "source": "TechCrunch",
+  "description": "Amazonが自社AIチップを他社にも販売し、Nvidiaに挑戦する計画",
+  "detail": "Amazon傘下のAWS（クラウドサービス部門）が、自社で作っているAI用の特別なコンピューターチップを、他のデータセンター（コンピューターをたくさん集めて動かしている施設）にも売り出す話し合いを進めているそうです。AWSのトップであるアンディ・ジャシーさんは、これがなんと5兆円規模（500億ドル）のビジネスチャンスになると話しています。\n\nこれまでAI用の高性能チップといえばNvidia（エヌビディア）という会社がほぼ独占していましたが、Amazonが自社チップを他社にも広く売るようになれば、Nvidia一強の状況が変わるかもしれません。私たちが普段使うアプリやサービスの裏側を支えるAIの仕組みにも関わってくる話なので、今後の動き次第でAI関連の値段や性能にも影響が出てくるかもしれません。詳しくは元記事をご覧ください。",
+  "tags": [
+    "AI",
+    "ビジネス"
+  ]
+}

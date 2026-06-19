@@ -138,5 +138,45 @@
   {
     "path": "articles/2026-06-19/001.json",
     "url": "https://techcrunch.com/2026/06/18/telegram-ban-in-india-sparks-a-rush-to-vpns-rival-apps/"
+  },
+  {
+    "path": "articles/2026-06-19/002.json",
+    "url": "https://techcrunch.com/2026/06/18/source-elastic-agrees-to-buy-crv-backed-deductiveai-for-up-to-85m/"
+  },
+  {
+    "path": "articles/2026-06-19/003.json",
+    "url": "https://techcrunch.com/2026/06/18/ai-inference-startup-baseten-reportedly-raising-1-5b-months-after-its-last-mega-round/"
+  },
+  {
+    "path": "articles/2026-06-19/004.json",
+    "url": "https://techcrunch.com/2026/06/18/snap-spins-off-ai-video-team-into-new-company-dotmo-due-to-costs/"
+  },
+  {
+    "path": "articles/2026-06-19/005.json",
+    "url": "https://techcrunch.com/2026/06/18/openai-is-bringing-on-some-big-guns-in-the-lead-up-to-its-ipo/"
+  },
+  {
+    "path": "articles/2026-06-19/006.json",
+    "url": "https://techcrunch.com/2026/06/18/the-11-standout-startups-from-ycs-demo-day-according-to-vcs/"
+  },
+  {
+    "path": "articles/2026-06-19/007.json",
+    "url": "https://techcrunch.com/2026/06/18/rivian-owners-file-lawsuit-alleging-false-promises-on-self-driving-features/"
+  },
+  {
+    "path": "articles/2026-06-19/008.json",
+    "url": "https://techcrunch.com/2026/06/18/almost-half-of-u-s-singles-feel-negatively-about-ai-in-dating-match-says/"
+  },
+  {
+    "path": "articles/2026-06-19/009.json",
+    "url": "https://techcrunch.com/2026/06/18/amazon-hopes-to-challenge-nvidia-more-directly-by-selling-its-ai-chips/"
+  },
+  {
+    "path": "articles/2026-06-19/010.json",
+    "url": "https://techcrunch.com/2026/06/18/mivos-new-app-takes-a-mindful-approach-to-managing-screen-time/"
+  },
+  {
+    "path": "articles/2026-06-19/011.json",
+    "url": "https://techcrunch.com/2026/06/18/ai-data-centers-just-got-a-government-mandated-fast-lane-to-the-grid/"
   }
 ]

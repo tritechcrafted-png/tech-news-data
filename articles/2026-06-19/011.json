@@ -1,0 +1,11 @@
+{
+  "title": "AI data centers just got a government-mandated fast lane to the grid",
+  "url": "https://techcrunch.com/2026/06/18/ai-data-centers-just-got-a-government-mandated-fast-lane-to-the-grid/",
+  "source": "TechCrunch",
+  "description": "AIデータセンターの電力網接続、政府機関が優先扱いを指示",
+  "detail": "アメリカの電力に関するルールを決める政府機関「FERC」が、電力網を管理する事業者たちに対して、AI用のデータセンターを電力網につなぐ手続きを早く進めるように指示したそうです。データセンターというのは、AIが大量の計算をするために使う巨大なコンピューターの集まりで、たくさんの電気を必要とします。今 AIブームでそうした施設がどんどん増えているので、電力網への接続待ちの行列を短くしようという狙いのようです。ただし、肝心の「そもそも電気が足りるのか」という供給不足の問題には触れられていないとのことで、つなぎやすくなっても電気自体が足りなければ意味がないかもしれません。詳しくは元記事をご覧ください。",
+  "tags": [
+    "AI",
+    "ビジネス"
+  ]
+}
