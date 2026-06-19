@@ -1,0 +1,10 @@
+{
+  "title": "Texas government data breach allowed hackers to steal 3 million driver’s licenses and passports",
+  "url": "https://techcrunch.com/2026/06/18/texas-government-data-breach-allowed-hackers-to-steal-3-million-drivers-licenses-and-passports/",
+  "source": "TechCrunch",
+  "description": "テキサス州で300万人分の運転免許証やパスポート情報が流出",
+  "detail": "アメリカのテキサス州で、運転免許証やパスポートといった政府が発行する身分証明書のデータが、ハッカーによって盗まれてしまったというニュースです。被害にあった人はなんと300万人以上にもなるそうです。\n\n運転免許証やパスポートには、名前や生年月日などとても大切な個人情報が載っているので、もし悪い人の手に渡ってしまうと、なりすましなどに使われてしまう心配があります。今回の記事ではどうやって流出したのかなど詳しいことまでは書かれていないので、詳しくは元記事をご覧ください。",
+  "tags": [
+    "セキュリティ"
+  ]
+}
