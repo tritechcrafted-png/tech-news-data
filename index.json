@@ -218,5 +218,9 @@
   {
     "path": "articles/2026-06-19/021.json",
     "url": "https://arstechnica.com/security/2026/06/microsoft-spots-new-self-propagating-malware-for-stealing-cryptocurrency/"
+  },
+  {
+    "path": "articles/2026-06-19/022.json",
+    "url": "https://arstechnica.com/apple/2026/06/apple-patches-high-severity-eavesdropping-vulnerability-in-beats-studio-buds/"
   }
 ]

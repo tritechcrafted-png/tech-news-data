@@ -1,0 +1,11 @@
+{
+  "title": "Apple patches high-severity eavesdropping vulnerability in Beats Studio Buds",
+  "url": "https://arstechnica.com/apple/2026/06/apple-patches-high-severity-eavesdropping-vulnerability-in-beats-studio-buds/",
+  "source": "Ars technica",
+  "description": "Beats Studio Budsの盗聴の恐れがある不具合をAppleが修正",
+  "detail": "Appleのワイヤレスイヤホン「Beats Studio Buds」に、誰かに通話などを盗み聞きされてしまうかもしれない、危険度の高い不具合(セキュリティの弱点)が見つかり、Appleが修正をおこないました。この不具合は1年前から知られていたもので、Beatsだけでなく他のメーカーの製品にも同じような問題があるとされています。イヤホンやスマート機器も今やパソコンと同じように修正(アップデート)が必要になることがある、という身近な例といえそうです。詳しくは元記事をご覧ください。",
+  "tags": [
+    "セキュリティ",
+    "ガジェット"
+  ]
+}
