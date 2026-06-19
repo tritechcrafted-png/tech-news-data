@@ -1,0 +1,10 @@
+{
+  "title": "Microsoft discovers new lightweight backdoor that steals cryptocurrency",
+  "url": "https://arstechnica.com/security/2026/06/microsoft-spots-new-self-propagating-malware-for-stealing-cryptocurrency/",
+  "source": "Ars technica",
+  "description": "Microsoftが暗号資産を盗む新しいウイルスを発見、USB経由で広がる",
+  "detail": "Microsoft(マイクロソフト)が、暗号資産(クリプト)を盗み出す新しいタイプの不正プログラムを見つけました。「Crypto Clipper」と呼ばれるこのプログラムは、USBメモリを介してパソコンからパソコンへ広がっていくのが特徴です。さらに、Tor(トーア)という匿名性の高い通信の仕組みを使ってやり取りをするため、どこから操られているのか追跡しにくいという厄介な点もあります。\n\n知らないUSBメモリを安易にパソコンに挿すのは危険、ということを改めて教えてくれるニュースです。詳しくは元記事をご覧ください。",
+  "tags": [
+    "セキュリティ"
+  ]
+}
